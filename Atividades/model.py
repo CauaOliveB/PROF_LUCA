@@ -1,8 +1,7 @@
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import BaseModel
 
 class Gods(BaseModel):
-    id : Optional[int] = None
     name : str
     nativename : str
     atribuition : str
