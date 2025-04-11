@@ -76,3 +76,18 @@ async def post_god(god : Gods):
     next_id = max(gods_database.keys(), default=0) + 1
     gods_database[next_id] = god
     return gods_database[next_id]
+
+@app.put("/Gods/{god_id}", status_code=status.HTTP_202_ACCEPTED)
+async def put_god(god_id : int, god : Gods):
+   if god_id not in gods_database:
+      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=" God not finded.;")
+   gods_database[god_id] = god,
+   return {"msg": "God updated with sucess", "god": god},
+
+@app.delete("/gods/{god_id}", status_code=status.HTTP_200_OK)
+async def delete_god(god_id: int):
+    if god_id not in gods_database:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="God not finded.")
+    god_deleted = gods_database[god_id]
+    del gods_database[god_id]
+    return {"message": "God removed with sucess", "god": god_deleted}
