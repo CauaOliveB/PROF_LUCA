@@ -11,7 +11,7 @@
 
 from fastapi import FastAPI, HTTPException, status, Response, Depends
 from typing import Optional, Any
-from model import Pato
+from Aula.ew import Pato
 
 
 app = FastAPI(title="API de Patos da DS14", version="0.0.1", description="API de Patos desenvolvido pelos alunos da DS14")

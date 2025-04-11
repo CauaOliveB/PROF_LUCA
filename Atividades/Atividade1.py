@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 from typing import Optional, Any, Dict
-from model import Gods
+from model import Gods,Updates
+
 
 
 '''
@@ -60,11 +61,11 @@ gods_database: Dict[int, dict] ={
     },
     }
 
-@app.get('/Gods', description="Retorna os deuses cadastrados")
+@app.get('/Gods', description="Return the registered gods")
 async def get_gods():
     return gods_database
 
-@app.get('/Gods/{god_id}', description="Retorna o Deus pelo ID trata o erro caso o ID não esteja cadastrado", summary="Retorna um Deus especifíco pelo ID e trata o erro caso o ID nção tenha sido cadastrado ")
+@app.get('/Gods/{god_id}', description="Return the god by ID, and if the ID is not registered return and error", summary="Return a god by ID and process the error if the god/ID did not exist")
 async def get_god(god_id : int):
   if god_id not in gods_database:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Não existe nenhum deus com este ID {god_id}")
@@ -82,12 +83,20 @@ async def put_god(god_id : int, god : Gods):
    if god_id not in gods_database:
       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=" God not finded.;")
    gods_database[god_id] = god,
-   return {"msg": "God updated with sucess", "god": god},
+   return {"msg": "God updated with success", "god": god},
 
-@app.delete("/gods/{god_id}", status_code=status.HTTP_200_OK)
+@app.delete("/gods/{god_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_god(god_id: int):
     if god_id not in gods_database:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="God not finded.")
     god_deleted = gods_database[god_id]
     del gods_database[god_id]
-    return {"message": "God removed with sucess", "god": god_deleted}
+    return {"message": "God removed with success", "god": god_deleted}
+
+@app.patch("/gods/{god_id}", status_code=status.HTTP_200_OK)
+async def patch_god(god_id : int, god : Updates):
+    if god_id not in gods_database:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="God not finded.")
+    gods_database[god_id] = god
+    return {"message": "God patched with success", "god": god}
+   

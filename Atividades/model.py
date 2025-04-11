@@ -8,4 +8,11 @@ class Gods(BaseModel):
     simbols  : str
     household : str
     foto : str
-    
+
+class Updates(BaseModel):
+    name : Optional[str] = None
+    nativename : Optional[str] = None
+    atribuition : Optional[str] = None
+    simbols  : Optional[str] = None
+    household : Optional[str] = None
+    foto : Optional[str] = None
