@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Gods of Olympus</title>
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 40px;
+        }
+        h1 {
+            color: #4B0082;
+        }
+        li {
+            display: flex;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 10px;
+            margin-bottom: 20px;
+            list-style: none;
+            max-width: 1200px;
+            gap:50.8px
+        }
+        img {
+            display: flex;
+            margin-top: 10px;
+            
+        }
+        strong {
+            font-size: 18px;
+            color: #341bf2;
+        }
+        
+        .map{
+            display: flex;
+            justify-content: end;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Gods List</h1>
+
+    <div style="display: flex; gap: 30px; align-items: flex-start; padding: 20px;">
+        <ul>
+            {% for god in gods %}
+                <li>
+                    <strong>{{ god.name }}</strong> ({{ god.nativename }})<br>
+                    <strong style="color: #9f19ff;">Atribuition:</strong> {{ god.atribuition }}<br>
+                    <strong style="color: #9f19ff;">Simbols:</strong> {{ god.simbols }}<br>
+                    <strong style="color: #9f19ff;">Household:</strong> {{ god.household }}<br>
+                    <img src="/static/images/{{ god.foto }}" alt="{{ god.name }}" width="100"><br><br>
+                </li>
+            {% endfor %}
+        </ul>
+        <div style="flex: 1;">
+            <img src="/static/images/Greek.jpeg" alt="Mapa" style="width: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+        </div>
+    </div>
+</body>
+</html>
