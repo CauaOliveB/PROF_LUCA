@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Hora de Aventura - Personagens</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fceaff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #623554;
+    }
+    form, .list {
+      background: #fff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #963c4f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #732a3a;
+    }
+    .card {
+      margin: 5px 0;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hora de Aventura - Personagens</h1>
+
+  <form id="reino-form">
+    <h2>Criar Reino</h2>
+    <input type="text" id="reino-nome" placeholder="Nome do Reino" required>
+    <button type="submit">Adicionar Reino</button>
+  </form>
+
+  <form id="personagem-form">
+    <h2>Criar Personagem</h2>
+    <input type="text" id="personagem-nome" placeholder="Nome" required>
+    <input type="text" id="personagem-tipo" placeholder="Tipo (herói, vilão...)" required>
+    <select id="personagem-reino"></select>
+    <button type="submit">Adicionar Personagem</button>
+  </form>
+
+  <div class="list">
+    <h2>Lista de Personagens</h2>
+    <div id="personagens-lista"></div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8000';
+
+    async function carregarReinos() {
+      const resposta = await fetch(`${API}/reinos/`);
+      const reinos = await resposta.json();
+      const select = document.getElementById('personagem-reino');
+      select.innerHTML = '';
+      reinos.forEach(r => {
+        const option = document.createElement('option');
+        option.value = r.id;
+        option.textContent = r.nome;
+        select.appendChild(option);
+      });
+    }
+
+    async function carregarPersonagens() {
+      const resposta = await fetch(`${API}/personagens/`);
+      const personagens = await resposta.json();
+      const lista = document.getElementById('personagens-lista');
+      lista.innerHTML = '';
+      personagens.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <strong>${p.nome}</strong> (${p.tipo}) - Reino ID: ${p.reino_id}
+          <button onclick="deletarPersonagem(${p.id})">🗑️</button>
+        `;
+        lista.appendChild(card);
+      });
+    }
+
+    async function criarReino(e) {
+      e.preventDefault();
+      const nome = document.getElementById('reino-nome').value;
+      await fetch(`${API}/reinos/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome })
+      });
+      document.getElementById('reino-form').reset();
+      carregarReinos();
+    }
+
+    async function criarPersonagem(e) {
+      e.preventDefault();
+      const nome = document.getElementById('personagem-nome').value;
+      const tipo = document.getElementById('personagem-tipo').value;
+      const reino_id = document.getElementById('personagem-reino').value;
+      await fetch(`${API}/personagens/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, tipo, reino_id })
+      });
+      document.getElementById('personagem-form').reset();
+      carregarPersonagens();
+    }
+
+    async function deletarPersonagem(id) {
+      await fetch(`${API}/personagens/${id}`, { method: 'DELETE' });
+      carregarPersonagens();
+    }
+
+    document.getElementById('reino-form').addEventListener('submit', criarReino);
+    document.getElementById('personagem-form').addEventListener('submit', criarPersonagem);
+
+    carregarReinos();
+    carregarPersonagens();
+  </script>
+</body>
+</html>
